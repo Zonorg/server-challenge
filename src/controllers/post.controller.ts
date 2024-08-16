@@ -25,4 +25,16 @@ export default class PostsController {
       res.status(500).json(error);
     }
   };
+
+  // Crear un nuevo post
+  public static createPost = async (req: Request, res: Response) => {
+    try {
+      const { title, body } = req.body;
+      const post = new Post({ title, body });
+      const savedPost = await post.save();
+      res.status(201).json(savedPost);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  };
 }
