@@ -10,7 +10,7 @@ export default class AuthController {
       // Verificar si ya existe un usuario con el mismo correo
       const existingUser = await User.findOne({ username });
       if (existingUser) {
-        return res.status(400).json({ message: "User with this username already exists." });
+        return res.status(400).json({ message: "Este usuario ya está registrado." });
       }
 
       // Encriptar contraseña
@@ -35,12 +35,12 @@ export default class AuthController {
   public static loginUser = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     try {
+      console.log(username, password);
       // Verificar si el usuario existe
       const user = await User.findOne({ username });
       if (!user) {
         return res.status(400).json({ message: "Invalid username or password." });
       }
-
       // Verificar contraseña
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {

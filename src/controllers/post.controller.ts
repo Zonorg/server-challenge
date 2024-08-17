@@ -26,15 +26,41 @@ export default class PostsController {
     }
   };
 
+  // Obtener todos los posts creados manualmente
+  public static getCreatedPosts = async (req: Request, res: Response) => {
+    try {
+      const createdPosts = await Post.find({ created: true });
+      res.status(200).json(createdPosts);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  };
+
   // Crear un nuevo post
   public static createPost = async (req: Request, res: Response) => {
     try {
       const { title, body } = req.body;
-      const post = new Post({ title, body });
+      const post = new Post({ title, body, created: true });
       const savedPost = await post.save();
       res.status(201).json(savedPost);
     } catch (error) {
       res.status(500).json(error);
+    }
+  };
+
+  // Eliminar un post
+  public static deletePost = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const deletedPost = await Post.findByIdAndDelete(id);
+
+      if (!deletedPost) {
+        return res.status(404).json({ message: "Post no encontrado" });
+      }
+
+      res.status(200).json({ message: "Post eliminado exitosamente", deletedPost });
+    } catch (error) {
+      res.status(500).json({ message: "Error al eliminar el post", error });
     }
   };
 }
