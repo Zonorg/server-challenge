@@ -9,4 +9,7 @@ router.get("/created-posts/", PostController.getCreatedPosts);
 
 router.post("/posts", PostController.createPost);
 
+router.delete("/posts/:id", PostController.deletePost)
+
+
 export default router;

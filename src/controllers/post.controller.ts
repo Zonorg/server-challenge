@@ -40,6 +40,9 @@ export default class PostsController {
   public static createPost = async (req: Request, res: Response) => {
     try {
       const { title, body } = req.body;
+      if (!title || !body) {
+        return res.status(400).json({ message: "Todos los campos son obligatorios" });
+      }
       const post = new Post({ title, body, created: true });
       const savedPost = await post.save();
       res.status(201).json(savedPost);
@@ -61,6 +64,23 @@ export default class PostsController {
       res.status(200).json({ message: "Post eliminado exitosamente", deletedPost });
     } catch (error) {
       res.status(500).json({ message: "Error al eliminar el post", error });
+    }
+  };
+
+  // Editar un post
+  public static updatePost = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { title, body } = req.body;
+      const updatedPost = await Post.findByIdAndUpdate(id, { title, body }, { new: true });
+
+      if (!updatedPost) {
+        return res.status(404).json({ message: "Post no encontrado" });
+      }
+
+      res.status(200).json({ message: "Post actualizado exitosamente", updatedPost });
+    } catch (error) {
+      res.status(500).json({ message: "Error al actualizar el post", error });
     }
   };
 }
